@@ -55,20 +55,11 @@ class Editor {
     });
 
     //折り返し処理
-    this.page.lines.forEach((line) => {
-
-      //１行あたりの最大文字数を超えている文字をカット
-      let overflowText = line.removeOverflowText();
-
-      //溢れた文字を次の行に写す
-      if (overflowText.length > 0) {
-        
-        if (overflowText.indexOf("\n") >= 0) {
-
-        }
-      }
-
-    });
+    let processLine = this.page.lines.get_line(0);
+    while (processLine != null) {
+      this.line_break_process(processLine);
+      processLine = processLine.nextLine();
+    }
 
   }
 
@@ -89,15 +80,31 @@ class Editor {
       }
     }
 
+    //折り返し(改行)処理を行うか判定
+    let isBreak = moveText.length > 0 || addBreakMark;
+    if (!isBreak) return;
 
+    //次の行取得
+    let nextLine = line.nextLine();
 
-    // 0123456789
+    //次の行がなければ作成
+    if (nextLine == null) {
+      nextLine = line.lines.add();
+    }
 
-    //１行あたりの最大文字数を超えている文字をカット
-    
+    //次の行の先頭に、折り返し文字を挿入
+    nextLine.insertText(0, moveText);
 
+    //改行マーク挿入
+    if (addBreakMark) {
+      line.addText("\n");
+    }
 
-
+    //改行コードを含む文字列を折り返した場合、次の行の折り返し処理を再帰的に呼ぶ
+    let mkIndex = moveText.indexOf("\n");
+    if (mkIndex >= 0) {
+      this.line_break_process(nextLine, mkIndex + 1, false);
+    }
 
   }
 

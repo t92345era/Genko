@@ -26,15 +26,17 @@ class Line {
 
   /**
    * テキスト挿入
+   * @param {Number} index 挿入開始インデックス
+   * @param {String} text 挿入する文字列
    */
   insertText(index, text) {
 
     // 挿入開始位置のタグを検索
-    let find_child$ = $(`.char:nth-child(${index})`, this.el$);
+    let find_child$ = $(`.char:nth-child(${index+1})`, this.el$);
 
     // 見つからない場合は、末尾に文字を追記
     if (find_child$.length == 0) {
-      return this.add(text);
+      return this.addText(text);
     }
 
     // 指定位置に文字を挿入
@@ -74,8 +76,9 @@ class Line {
     this.chars$().filter((index, el) => {
       return startIndex <= index && index <= endIndex;
     }).each((index, el) => {
-      result += this.get_text($(el).index(), 1);
+      result += this.__spanToText($(el));
     }).remove();
+    return result;
   }
 
   /**
@@ -239,7 +242,7 @@ class LineCollection {
     this.page.editor.el$.append(el_line$);
 
     // 内部管理用の行クラス作成
-    var line = new Line(el_line$);
+    var line = new Line(el_line$, this);
     this.lines.push(line);
     return line;
   }
@@ -259,7 +262,7 @@ class LineCollection {
     this.get_line(index).el$.before(el_line$);
 
     // 内部管理用の行クラス作成
-    var line = new Line(el_line$);
+    var line = new Line(el_line$, this);
     array.splice(index, 0, line);
     return line;
   }
