@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>画像タイトル</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <script src="script/jquery-3.3.1.min.js"></script>
+  <script src="script/app.js"></script>
+  
+</head>
+
+<body>
+
+<style type="text/css">
+  body { padding: 30px; }
+  #sample { margin-top:30px; border:1px solid #333; width: 330px; padding: 50px; }
+  #sample2 { margin-top: 50px; }
+  big { color: #e33; }
+</style>
+
+<div id="sample" contentEditable="true">
+  <div id="line1">JavaScriptで選択範囲を制御</div>
+  <!--<div id="line2">明日は<big>かつ丼定食</big>だ。</div>-->
+</div>
+
+<button id="sample2">サンプル</button>
+
+<script>
+  $("#sample2").click(e => {
+    var selection = window.getSelection();    //Selectionインスタンスの取得
+    var range = document.createRange();       //Rangeインスタンスを生成する
+
+    // 選択範囲開始を、div#line2 に設定
+    let  elStart  =  document.getElementById("line2");
+    range.setStart(elStart, 0);  //①
+
+    // 選択範囲終了を、bigタグ内のテキストの３文字目までに設定
+    let  elEnd  =  document.querySelector("#line2 big").childNodes[0];
+    range.setEnd(elEnd, 3);    //②
+
+    // //選択範囲の開始・終了位置を設定する
+    // let  elStart  =  document.getElementById("sample");
+    // range.setStart(elStart, 1);  //①
+
+    // let  elEnd  =  document.getElementById("line2");
+    // range.setEnd(elEnd, 1);    //②
+
+    // let  el  =  document.getElementById("sample");
+    // range.setStart(el, 1);  //①
+    // range.setEnd(el, 2);    //②
+
+    //現在の選択範囲をすべて解除
+    selection.removeAllRanges(); 
+
+    //上の処理で作成した選択範囲(range)を追加する
+    selection.addRange(range);
+  });
+  
+</script>
+
+</body>
+</html>
+
